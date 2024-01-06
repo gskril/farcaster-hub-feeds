@@ -1,0 +1,4 @@
+name = "farcaster-hub-feeds"
+main = "src/index.ts"
+compatibility_date = "2023-09-22"
+node_compat = true
