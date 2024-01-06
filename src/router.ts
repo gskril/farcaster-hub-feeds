@@ -21,6 +21,6 @@ router.get('/', () => {
 });
 
 router
-	.get('/:type/user', (req, env) => handleUser(req, env))
-	.get('/:type/channel', (req, env) => handleChannel(req, env))
+	.get('/:feedType/user', (req, env) => handleUser(req, env))
+	.get('/:feedType/channel', (req, env) => handleChannel(req, env))
 	.all('*', () => new Response('Not Found.', { status: 404 }));

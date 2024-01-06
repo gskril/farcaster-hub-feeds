@@ -6,7 +6,7 @@ import { CastsByFid } from '../types';
 import { fidToProfile, fromFarcasterTime } from '../farcaster';
 
 const pathSchema = z.object({
-	type: z.enum(['rss', 'json', 'atom']),
+	feedType: z.enum(['rss', 'json', 'atom']),
 });
 
 const paramsSchema = z.object({
@@ -22,7 +22,7 @@ export default async function handler(req: IRequest, env: Env) {
 	if (!safePath.success) return Response.json(safePath.error, { status: 400 });
 	if (!safeParams.success) return Response.json(safeParams.error, { status: 400 });
 
-	const { type } = safePath.data;
+	const { feedType } = safePath.data;
 	const { hub: _hub, fid, pageSize } = safeParams.data;
 
 	const hub = _hub.replace(/\/$/, ''); // remove trailing slash
@@ -74,9 +74,9 @@ export default async function handler(req: IRequest, env: Env) {
 
 	let feedOutput;
 
-	if (type === 'rss') feedOutput = feed.rss2();
-	else if (type === 'json') feedOutput = feed.json1();
-	else if (type === 'atom') feedOutput = feed.atom1();
+	if (feedType === 'rss') feedOutput = feed.rss2();
+	else if (feedType === 'json') feedOutput = feed.json1();
+	else if (feedType === 'atom') feedOutput = feed.atom1();
 
 	return new Response(feedOutput, { status: 200 });
 }
