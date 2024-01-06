@@ -39,15 +39,6 @@ export type CastsByFid = HubResponse<{
 	};
 }>;
 
-export type UsernameProof = {
-	timestamp: number;
-	name: string;
-	owner: string;
-	signature: string;
-	fid: number;
-	type: string;
-};
-
 export type UserData = HubResponse<{
 	type: string;
 	fid: number;

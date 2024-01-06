@@ -1,4 +1,4 @@
-import { Profile, UserData, UsernameProof } from './types';
+import { Profile, UserData } from './types';
 
 const FARCASTER_EPOCH = 1609459200000; // January 1, 2021 UTC
 
@@ -9,20 +9,6 @@ const FARCASTER_EPOCH = 1609459200000; // January 1, 2021 UTC
  */
 export function fromFarcasterTime(time: number) {
 	return time * 1000 + FARCASTER_EPOCH;
-}
-
-export async function usernameToFid(hub: string, username: string) {
-	const endpoint = hub + `/v1/userNameProofByName?name=${username}`;
-	const res = await fetch(endpoint);
-
-	if (!res.ok) {
-		throw new Error(res.statusText);
-	}
-
-	const json = await res.json();
-	const usernameProof = json as UsernameProof;
-
-	return usernameProof.fid;
 }
 
 export async function fidToProfile(hub: string, fid: number): Promise<Profile> {
