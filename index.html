@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farcaster Hub Feeds</title>
+    <meta
+      name="description"
+      content="Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub."
+    />
+    <meta property="og:title" content="Farcaster Hub Feeds" />
+    <meta
+      property="og:description"
+      content="Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub."
+    />
+    <link href="https://kit.design/dist/main.0.0.1.css" rel="stylesheet" />
+  </head>
+  <body>
+    <vstack alignment="leading" padding>
+      <text font="title2">Farcaster Hub Feeds</text>
+
+      <text font="subheadline" foreground="gray">
+        Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub.
+      </text>
+
+      <vstack padding="top" alignment="leading">
+        <text font="title3">How To Use</text>
+        <text foreground="gray">
+          All feeds exclude replies and are sorted in reverse chronological order.
+        </text>
+
+        <hstack>
+          <code>/rss/user/{fid}</code>
+          <text foreground="gray">Generate an RSS feed of a user's casts.</text>
+        </hstack>
+
+        <hstack>
+          <code>/atom/user/{fid}</code>
+          <text foreground="gray">Generate an Atom feed of a user's casts.</text>
+        </hstack>
+
+        <hstack>
+          <code>/json/user/{fid}</code>
+          <text foreground="gray">Generate an JSON feed of a user's casts.</text>
+        </hstack>
+      </vstack>
+
+      <vstack padding="top" alignment="leading">
+        <text font="title3">Configuration</text>
+
+        <text foreground="gray">
+          To use a specific Farcaster Hub, add the "hub" query parameter where the value
+          includes the HTTP port (eg: <code>https://hub.freefarcasterhub.com:3281</code>)
+        </text>
+      </vstack>
+    </vstack>
+  </body>
+</html>
