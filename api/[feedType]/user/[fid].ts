@@ -2,7 +2,12 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Feed } from 'feed';
 import z from 'zod';
 
-import { fidToProfile, fromFarcasterTime, getCastsByFid } from '../../_src/farcaster';
+import {
+  fidToProfile,
+  fromFarcasterTime,
+  generateCastText,
+  getCastsByFid,
+} from '../../_src/farcaster';
 import {
   DEFAULT_HUB,
   getImageFromCast,
@@ -44,7 +49,7 @@ export default async function handleUser(req: VercelRequest, res: VercelResponse
 
     feed.addItem({
       id: cast.hash,
-      title: cast.data.castAddBody.text,
+      title: generateCastText(cast.data.castAddBody),
       link: warpcastConvoUrl(cast.hash),
       date: new Date(fromFarcasterTime(cast.data.timestamp)),
       image: getImageFromCast(cast.data.castAddBody),

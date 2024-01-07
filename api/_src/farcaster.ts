@@ -1,4 +1,4 @@
-import { Casts, Profile, UserData } from './types';
+import { CastAddBody, Casts, Profile, UserData } from './types';
 
 const FARCASTER_EPOCH = 1609459200000; // January 1, 2021 UTC
 
@@ -68,4 +68,36 @@ export async function getCastsByParent(hub: string, url: string) {
   const json = await res.json();
   const castsByParent = json as Casts;
   return { data: castsByParent };
+}
+
+/**
+ * Combines the cast text with mentions by position. Mentions are represented
+ * by FIDs rather than usernames due to the way hubs store mentions.
+ * @param castBody
+ * @returns A formatted string of the cast's text including mentions
+ */
+export function generateCastText(castBody: CastAddBody) {
+  if (castBody.mentions.length === 0) return castBody.text;
+
+  const text = castBody.text;
+  const mentionFids = castBody.mentions;
+  const mentionPositions = castBody.mentionsPositions;
+
+  const mentionsMap = new Map<number, number>();
+  for (let i = 0; i < mentionPositions.length; i++) {
+    mentionsMap.set(mentionPositions[i], mentionFids[i]);
+  }
+
+  let castText = '';
+
+  for (let i = 0; i < text.length; i++) {
+    if (mentionsMap.has(i)) {
+      const fid = mentionsMap.get(i);
+      castText += `@!${fid}`;
+    }
+
+    castText += text[i];
+  }
+
+  return castText;
 }
