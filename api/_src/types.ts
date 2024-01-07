@@ -30,7 +30,7 @@ export type CastAddBody = {
   parentUrl?: string;
 };
 
-export type CastsByFid = HubResponse<{
+export type Casts = HubResponse<{
   type: string;
   fid: number;
   timestamp: number;
@@ -54,8 +54,8 @@ export type UserData = HubResponse<{
 
 export type Profile = {
   fid: number;
-  name: string | undefined;
-  username: string | undefined;
-  pfp: string | undefined;
-  bio: string | undefined;
+  name?: string | undefined;
+  username?: string | undefined;
+  pfp?: string | undefined;
+  bio?: string | undefined;
 };

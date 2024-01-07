@@ -1,4 +1,4 @@
-import { CastsByFid, Profile, UserData } from './types';
+import { Casts, Profile, UserData } from './types';
 
 const FARCASTER_EPOCH = 1609459200000; // January 1, 2021 UTC
 
@@ -53,6 +53,19 @@ export async function getCastsByFid(hub: string, fid: number) {
   }
 
   const json = await res.json();
-  const castsByFid = json as CastsByFid;
+  const castsByFid = json as Casts;
   return { data: castsByFid };
+}
+
+export async function getCastsByParent(hub: string, url: string) {
+  const endpoint = hub + `/v1/castsByParent?url=${url}`;
+  const res = await fetch(endpoint);
+
+  if (!res.ok) {
+    return { error: res.statusText };
+  }
+
+  const json = await res.json();
+  const castsByParent = json as Casts;
+  return { data: castsByParent };
 }

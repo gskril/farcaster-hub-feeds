@@ -2,39 +2,37 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Feed } from 'feed';
 import z from 'zod';
 
-import { fidToProfile, fromFarcasterTime, getCastsByFid } from '../../_src/farcaster';
+import { fromFarcasterTime, getCastsByParent } from '../_src/farcaster';
 import {
   DEFAULT_HUB,
   getImageFromCast,
-  profileName,
   warpcastConvoUrl,
   warpcastProfileUrl,
-} from '../../_src/utils';
+} from '../_src/utils';
 
 const schema = z.object({
-  fid: z.coerce.number(),
+  url: z.string(),
   feedType: z.enum(['rss', 'json', 'atom']),
   hub: z.string().url().default(DEFAULT_HUB),
 });
 
+// TODO: Enhance parent_url data to include name, icon, etc if possible
+// Maybe we can use something like this https://github.com/neynarxyz/farcaster-channels/blob/main/warpcast.json
 export default async function handleUser(req: VercelRequest, res: VercelResponse) {
   const safeParse = schema.safeParse(req.query);
   if (!safeParse.success) return res.status(400).json(safeParse.error);
 
-  const { feedType, fid, hub: _hub } = safeParse.data;
+  const { feedType, url, hub: _hub } = safeParse.data;
   const hub = _hub.replace(/\/$/, ''); // remove trailing slash
-  const profile = await fidToProfile(hub, fid);
-  const castsByFid = await getCastsByFid(hub, fid);
+  const castsByParent = await getCastsByParent(hub, url);
 
-  if (castsByFid.error) return res.status(500).json(castsByFid);
-  const casts = castsByFid?.data?.messages;
+  if (castsByParent.error) return res.status(500).json(castsByParent);
+  const casts = castsByParent?.data?.messages;
 
   const feed = new Feed({
-    id: fid.toString(),
-    title: `${profileName(profile)}'s Farcaster Feed`,
-    description: profile.bio,
-    link: warpcastProfileUrl(profile),
-    image: profile.pfp,
+    id: url,
+    title: `Farcaster Channel`,
+    link: url,
     copyright: '',
   });
 
@@ -50,8 +48,7 @@ export default async function handleUser(req: VercelRequest, res: VercelResponse
       image: getImageFromCast(cast.data.castAddBody),
       author: [
         {
-          name: profileName(profile),
-          link: warpcastProfileUrl(profile),
+          link: warpcastProfileUrl({ fid: cast.data.fid }),
         },
       ],
     });
