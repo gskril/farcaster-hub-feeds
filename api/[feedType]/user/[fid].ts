@@ -2,8 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Feed } from 'feed';
 import z from 'zod';
 
-import { CastsByFid } from '../../_src/types';
-import { fidToProfile, fromFarcasterTime } from '../../_src/farcaster';
+import { fidToProfile, fromFarcasterTime, getCastsByFid } from '../../_src/farcaster';
 
 const pathSchema = z.object({
   feedType: z.enum(['rss', 'json', 'atom']),
@@ -15,27 +14,22 @@ const paramsSchema = z.object({
   pageSize: z.coerce.number().max(1000).default(1000),
 });
 
-export default async function handleUser(req: VercelRequest, response: VercelResponse) {
+export default async function handleUser(req: VercelRequest, res: VercelResponse) {
   const safePath = pathSchema.safeParse(req.query);
   const safeParams = paramsSchema.safeParse(req.query);
 
-  if (!safePath.success) return response.status(400).json(safePath.error);
-  if (!safeParams.success) return response.status(400).json(safeParams.error);
+  if (!safePath.success) return res.status(400).json(safePath.error);
+  if (!safeParams.success) return res.status(400).json(safeParams.error);
 
   const { feedType } = safePath.data;
   const { hub: _hub, fid, pageSize } = safeParams.data;
 
   const hub = _hub.replace(/\/$/, ''); // remove trailing slash
-  const endpoint = hub + `/v1/castsByFid?pageSize=${pageSize}&reverse=1&fid=${fid}`;
   const profile = await fidToProfile(hub, fid);
-  const res = await fetch(endpoint);
+  const castsByFid = await getCastsByFid(hub, fid);
 
-  if (!res.ok) {
-    return response.status(res.status).json(res.statusText);
-  }
-
-  const json = await res.json();
-  const castsByFid = json as CastsByFid;
+  if (castsByFid.error) return res.status(500).json(castsByFid);
+  const casts = castsByFid?.data?.messages;
 
   const feed = new Feed({
     title: `${profile.name || `@${profile.username}`}'s Farcaster Feed`,
@@ -46,7 +40,7 @@ export default async function handleUser(req: VercelRequest, response: VercelRes
     copyright: '',
   });
 
-  castsByFid.messages.forEach((cast) => {
+  casts?.forEach((cast) => {
     if (!cast.data.castAddBody) return;
 
     // Exclude replies
@@ -73,18 +67,18 @@ export default async function handleUser(req: VercelRequest, response: VercelRes
   });
 
   if (feedType === 'rss') {
-    return response
+    return res
       .setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
       .send(feed.rss2())
       .status(200);
   }
 
   if (feedType === 'atom') {
-    return response
+    return res
       .setHeader('Content-Type', 'application/atom+xml; charset=utf-8')
       .send(feed.atom1())
       .status(200);
   }
 
-  return response.json(feed.json1()).status(200);
+  return res.json(feed.json1()).status(200);
 }
