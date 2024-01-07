@@ -3,27 +3,25 @@ import { Feed } from 'feed';
 import z from 'zod';
 
 import { fidToProfile, fromFarcasterTime, getCastsByFid } from '../../_src/farcaster';
+import {
+  DEFAULT_HUB,
+  getImageFromCast,
+  profileName,
+  warpcastConvoUrl,
+  warpcastProfileUrl,
+} from '../../_src/utils';
 
-const pathSchema = z.object({
-  feedType: z.enum(['rss', 'json', 'atom']),
-});
-
-const paramsSchema = z.object({
-  hub: z.string().url().default('https://nemes.farcaster.xyz:2281'),
+const schema = z.object({
   fid: z.coerce.number(),
-  pageSize: z.coerce.number().max(1000).default(1000),
+  feedType: z.enum(['rss', 'json', 'atom']),
+  hub: z.string().url().default(DEFAULT_HUB),
 });
 
 export default async function handleUser(req: VercelRequest, res: VercelResponse) {
-  const safePath = pathSchema.safeParse(req.query);
-  const safeParams = paramsSchema.safeParse(req.query);
+  const safeParse = schema.safeParse(req.query);
+  if (!safeParse.success) return res.status(400).json(safeParse.error);
 
-  if (!safePath.success) return res.status(400).json(safePath.error);
-  if (!safeParams.success) return res.status(400).json(safeParams.error);
-
-  const { feedType } = safePath.data;
-  const { hub: _hub, fid, pageSize } = safeParams.data;
-
+  const { feedType, fid, hub: _hub } = safeParse.data;
   const hub = _hub.replace(/\/$/, ''); // remove trailing slash
   const profile = await fidToProfile(hub, fid);
   const castsByFid = await getCastsByFid(hub, fid);
@@ -32,35 +30,28 @@ export default async function handleUser(req: VercelRequest, res: VercelResponse
   const casts = castsByFid?.data?.messages;
 
   const feed = new Feed({
-    title: `${profile.name || `@${profile.username}`}'s Farcaster Feed`,
+    title: `${profileName(profile)}'s Farcaster Feed`,
     description: profile.bio,
     id: fid.toString(),
-    link: `https://warpcast.com/${profile.username || `~/profiles/${fid}`}`,
+    link: warpcastProfileUrl(profile),
     image: profile.pfp,
     copyright: '',
   });
 
   casts?.forEach((cast) => {
     if (!cast.data.castAddBody) return;
-
-    // Exclude replies
-    if (cast.data.castAddBody.parentCastId) return;
-
-    const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
-    const firstEmbedUrl = cast.data.castAddBody.embeds?.[0]?.url;
-    const firstEmbedUrlExtension = firstEmbedUrl?.split('.').pop();
-    const isEmbedImage = imageExtensions.includes(firstEmbedUrlExtension || '');
+    if (cast.data.castAddBody.parentCastId) return; // exclude replies
 
     feed.addItem({
       id: cast.hash,
       title: cast.data.castAddBody.text,
-      link: `https://warpcast.com/~/conversations/${cast.hash}`,
+      link: warpcastConvoUrl(cast.hash),
       date: new Date(fromFarcasterTime(cast.data.timestamp)),
-      image: isEmbedImage ? firstEmbedUrl : '',
+      image: getImageFromCast(cast.data.castAddBody),
       author: [
         {
-          name: profile.name || `@${profile.username}`,
-          link: `https://warpcast.com/${profile.username || `~/profiles/${fid}`}`,
+          name: profileName(profile),
+          link: warpcastProfileUrl(profile),
         },
       ],
     });

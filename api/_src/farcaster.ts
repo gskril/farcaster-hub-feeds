@@ -17,6 +17,7 @@ export async function fidToProfile(hub: string, fid: number): Promise<Profile> {
 
   if (!res.ok) {
     return {
+      fid,
       name: undefined,
       username: undefined,
       pfp: undefined,
@@ -33,6 +34,7 @@ export async function fidToProfile(hub: string, fid: number): Promise<Profile> {
   }
 
   const profile = {
+    fid,
     name: findUserData('USER_DATA_TYPE_DISPLAY'),
     username: findUserData('USER_DATA_TYPE_USERNAME'),
     pfp: findUserData('USER_DATA_TYPE_PFP'),

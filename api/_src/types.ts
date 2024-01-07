@@ -12,28 +12,30 @@ type HubResponse<T> = {
   nextPageToken: string;
 };
 
+export type CastAddBody = {
+  mentions: Array<number>;
+  text: string;
+  mentionsPositions: Array<number>;
+  embeds: Array<{
+    url?: string;
+    castId?: {
+      fid: number;
+      hash: string;
+    };
+  }>;
+  parentCastId?: {
+    fid: number;
+    hash: string;
+  };
+  parentUrl?: string;
+};
+
 export type CastsByFid = HubResponse<{
   type: string;
   fid: number;
   timestamp: number;
   network: string;
-  castAddBody?: {
-    mentions: Array<number>;
-    text: string;
-    mentionsPositions: Array<number>;
-    embeds: Array<{
-      url?: string;
-      castId?: {
-        fid: number;
-        hash: string;
-      };
-    }>;
-    parentCastId?: {
-      fid: number;
-      hash: string;
-    };
-    parentUrl?: string;
-  };
+  castAddBody?: CastAddBody;
   castRemoveBody?: {
     targetHash: string;
   };
@@ -51,6 +53,7 @@ export type UserData = HubResponse<{
 }>;
 
 export type Profile = {
+  fid: number;
   name: string | undefined;
   username: string | undefined;
   pfp: string | undefined;
