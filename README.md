@@ -2,7 +2,27 @@
 
 Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub.
 
-## Deploying
+## Run Locally
+
+Install the [Vercel CLI](https://vercel.com/docs/cli)
+
+```bash
+npm i -g vercel
+```
+
+Install dependencies:
+
+```bash
+yarn install
+```
+
+Run the development server
+
+```bash
+vercel dev
+```
+
+## Deploy
 
 I run this app on Vercel Serverless Functions. There are no environment variables and all endpoints allow you to specify a custom Farcaster hub. Feel free to deploy your own instance.
 
