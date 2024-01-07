@@ -2,8 +2,8 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Feed } from 'feed';
 import z from 'zod';
 
-import { CastsByFid } from '../_src/types';
-import { fidToProfile, fromFarcasterTime } from '../_src/farcaster';
+import { CastsByFid } from '../../_src/types';
+import { fidToProfile, fromFarcasterTime } from '../../_src/farcaster';
 
 const pathSchema = z.object({
   feedType: z.enum(['rss', 'json', 'atom']),
