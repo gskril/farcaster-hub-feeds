@@ -6,12 +6,13 @@ import { fromFarcasterTime, generateCastText, getCastsByParent } from '../_src/f
 import {
   DEFAULT_HUB,
   getImageFromCast,
+  isUrl,
   warpcastConvoUrl,
   warpcastProfileUrl,
 } from '../_src/utils';
 
 const schema = z.object({
-  url: z.string(),
+  id: z.string(),
   feedType: z.enum(['rss', 'json', 'atom']),
   hub: z.string().url().default(DEFAULT_HUB),
 });
@@ -22,17 +23,17 @@ export default async function handleUser(req: VercelRequest, res: VercelResponse
   const safeParse = schema.safeParse(req.query);
   if (!safeParse.success) return res.status(400).json(safeParse.error);
 
-  const { feedType, url, hub: _hub } = safeParse.data;
+  const { feedType, id, hub: _hub } = safeParse.data;
   const hub = _hub.replace(/\/$/, ''); // remove trailing slash
-  const castsByParent = await getCastsByParent(hub, url);
+  const castsByParent = await getCastsByParent(hub, id);
 
   if (castsByParent.error) return res.status(500).json(castsByParent);
   const casts = castsByParent?.data?.messages;
 
   const feed = new Feed({
-    id: url,
+    id,
     title: `Farcaster Channel`,
-    link: url,
+    link: isUrl(id) ? id : undefined,
     copyright: '',
   });
 

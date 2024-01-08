@@ -23,4 +23,13 @@ export function getImageFromCast(castAddBody: CastAddBody) {
   return isEmbedImage ? firstEmbedUrl : '';
 }
 
+export function isUrl(maybeUrl: string) {
+  try {
+    new URL(maybeUrl);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const DEFAULT_HUB = 'https://nemes.farcaster.xyz:2281';
