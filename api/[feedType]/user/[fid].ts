@@ -76,5 +76,8 @@ export default async function handleUser(req: VercelRequest, res: VercelResponse
       .status(200);
   }
 
-  return res.json(feed.json1()).status(200);
+  return res
+    .setHeader('Content-Type', 'application/json; charset=utf-8')
+    .send(feed.json1())
+    .status(200);
 }
