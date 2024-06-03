@@ -18,7 +18,9 @@ export function getImageFromCast(castAddBody: CastAddBody) {
   const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
   const firstEmbedUrl = castAddBody.embeds?.[0]?.url;
   const firstEmbedUrlExtension = firstEmbedUrl?.split('.').pop();
-  const isEmbedImage = imageExtensions.includes(firstEmbedUrlExtension || '');
+  const isEmbedImage =
+    imageExtensions.includes(firstEmbedUrlExtension || '') ||
+    firstEmbedUrl?.startsWith('https://imagedelivery.net');
 
   return isEmbedImage ? firstEmbedUrl : '';
 }
