@@ -25,4 +25,4 @@ export function getImageFromCast(castAddBody: CastAddBody) {
   return isEmbedImage ? firstEmbedUrl : '';
 }
 
-export const DEFAULT_HUB = 'https://nemes.farcaster.xyz:2281';
+export const DEFAULT_HUB = 'https://hoyt.farcaster.xyz:2281';
