@@ -68,5 +68,8 @@ export default async function handleUser(req: VercelRequest, res: VercelResponse
       .status(200);
   }
 
-  return res.json(feed.json1()).status(200);
+  return res
+    .setHeader('Cache-Control', 'public, max-age=240, stale-while-revalidate=60')
+    .json(feed.json1())
+    .status(200);
 }
