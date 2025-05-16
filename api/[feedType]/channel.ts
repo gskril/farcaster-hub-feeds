@@ -2,13 +2,17 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Feed } from 'feed';
 import z from 'zod';
 
-import { fromFarcasterTime, generateCastText, getCastsByParent } from '../_src/farcaster';
+import {
+  fromFarcasterTime,
+  generateCastText,
+  getCastsByParent,
+} from '../_src/farcaster.js';
 import {
   DEFAULT_HUB,
   getImageFromCast,
   warpcastConvoUrl,
   warpcastProfileUrl,
-} from '../_src/utils';
+} from '../_src/utils.js';
 
 const schema = z.object({
   url: z.string(),

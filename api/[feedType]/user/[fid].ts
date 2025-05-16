@@ -7,14 +7,14 @@ import {
   fromFarcasterTime,
   generateCastText,
   getCastsByFid,
-} from '../../_src/farcaster';
+} from '../../_src/farcaster.js';
 import {
   DEFAULT_HUB,
   getImageFromCast,
   profileName,
   warpcastConvoUrl,
   warpcastProfileUrl,
-} from '../../_src/utils';
+} from '../../_src/utils.js';
 
 const schema = z.object({
   fid: z.coerce.number(),

@@ -1,4 +1,4 @@
-import { CastAddBody, Profile } from './types';
+import { CastAddBody, Profile } from './types.js';
 
 export function profileName(profile: Profile) {
   return profile.name || `@${profile.username}`;
@@ -25,4 +25,4 @@ export function getImageFromCast(castAddBody: CastAddBody) {
   return isEmbedImage ? firstEmbedUrl : '';
 }
 
-export const DEFAULT_HUB = process.env.DEFAULT_HUB || 'https://hoyt.farcaster.xyz:2281';
+export const DEFAULT_HUB = process.env.DEFAULT_HUB ?? 'https://hoyt.farcaster.xyz:2281';
