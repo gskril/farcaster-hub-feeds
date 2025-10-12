@@ -1,18 +1,22 @@
 {
-  "name": "farcaster-hub-feeds",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "preview": "vercel dev"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.18",
-    "@vercel/node": "^5.3.24",
-    "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "feed": "^4.2.2",
-    "zod": "^3.22.4"
-  }
+	"name": "farcaster-hub-feeds",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy --minify",
+		"preview": "wrangler dev"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20241022.0",
+		"@types/node": "^22.15.18",
+		"typescript": "^5.3.3",
+		"wrangler": "^3.80.4"
+	},
+	"dependencies": {
+		"feed": "^4.2.2",
+		"hono": "^4.6.14",
+		"zod": "^3.22.4"
+	}
 }

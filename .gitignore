@@ -4,3 +4,6 @@
 .env
 .env.local
 
+
+.dev.vars
+.wrangler

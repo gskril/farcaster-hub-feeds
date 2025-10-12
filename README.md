@@ -1,29 +1,121 @@
-# Farcaster Channel Feeds
+# Farcaster Hub Feeds
 
-Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub.
+Generate RSS, Atom, and JSON feeds from Farcaster Hub data. Built with Hono and Cloudflare Workers.
 
-## Run Locally
+## Features
 
-Install the [Vercel CLI](https://vercel.com/docs/cli)
+- Generate feeds for Farcaster channels
+- Generate feeds for user profiles
+- Support for RSS, Atom, and JSON feed formats
+- Filter user feeds by parent URL (channel)
+- Configurable Farcaster Hub endpoint
+- Fast edge deployment with Cloudflare Workers
+
+## Setup
+
+### Prerequisites
+
+- Node.js 18+ or compatible package manager
+- Cloudflare account (for deployment)
+
+### Installation
 
 ```bash
-npm i -g vercel
+npm install
 ```
 
-Install dependencies:
+### Development
+
+Run the development server locally:
 
 ```bash
-yarn install
+npm run dev
 ```
 
-Run the development server
+This will start Wrangler's local development server at `http://localhost:8787`.
+
+### Deployment
+
+Deploy to Cloudflare Workers:
 
 ```bash
-vercel dev
+npm run deploy
 ```
 
-## Deploy
+You'll need to authenticate with Cloudflare on first deployment.
 
-I run this app on Vercel Serverless Functions. There are no environment variables and all endpoints allow you to specify a custom Farcaster hub. Feel free to deploy your own instance.
+## API Endpoints
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgskril%2Ffarcaster-hub-feeds&demo-title=Farcaster%20Hub%20Feeds&demo-url=https%3A%2F%2Ffeeds.fcstr.xyz)
+### Channel Feeds
+
+Get feeds for a specific Farcaster channel:
+
+```
+GET /{feedType}/channel?url={channel_url}
+```
+
+**Parameters:**
+- `feedType`: Feed format - `rss`, `atom`, or `json`
+- `url`: Channel URL (required)
+- `hub`: Custom Farcaster Hub URL (optional, defaults to `DEFAULT_HUB` env var)
+- `limit`: Maximum number of casts (optional, default: 1000)
+
+**Example:**
+```
+GET /rss/channel?url=https://warpcast.com/~/channel/farcaster
+```
+
+### User Feeds
+
+Get feeds for a specific user by FID:
+
+```
+GET /{feedType}/user/{fid}
+```
+
+**Parameters:**
+- `feedType`: Feed format - `rss`, `atom`, or `json`
+- `fid`: Farcaster ID (required, in URL path)
+- `parent_url`: Filter casts by channel URL (optional)
+- `hub`: Custom Farcaster Hub URL (optional, defaults to `DEFAULT_HUB` env var)
+- `limit`: Maximum number of casts (optional, default: 1000)
+
+**Example:**
+```
+GET /rss/user/3?parent_url=https://warpcast.com/~/channel/farcaster
+```
+
+## Configuration
+
+### Environment Variables
+
+Set in `wrangler.toml`:
+
+```toml
+[vars]
+DEFAULT_HUB = "https://hoyt.farcaster.xyz:2281"
+```
+
+Or configure via Cloudflare Dashboard for production secrets.
+
+## Project Structure
+
+```
+src/
+├── index.ts              # Main Hono app and routes
+├── lib/
+│   ├── farcaster.ts      # Farcaster Hub API client
+│   ├── types.ts          # TypeScript types
+│   └── utils.ts          # Utility functions
+└── routes/
+    ├── channel.ts        # Channel feed handler
+    └── user.ts           # User feed handler
+```
+
+## Migration from Vercel
+
+This project has been refactored from Vercel Serverless Functions to Cloudflare Workers. The old Vercel API routes are in the `api/` directory and can be removed after verifying the new implementation works correctly.
+
+## License
+
+MIT

@@ -1,0 +1,106 @@
+import type { Context } from "hono";
+import { html } from "hono/html";
+
+export async function indexHandler(c: Context) {
+	return c.html(
+		html`
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Farcaster Hub Feeds</title>
+      <meta
+        name="description"
+        content="Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub."
+      />
+      <meta property="og:title" content="Farcaster Hub Feeds" />
+      <meta
+        property="og:description"
+        content="Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub."
+      />
+      <link href="https://kit.design/dist/main.0.0.1.css" rel="stylesheet" />
+    </head>
+    <body>
+      <vstack alignment="leading" padding>
+        <hstack>
+          <text font="title1">Farcaster Hub Feeds</text>
+        </hstack>
+
+        <text font="subheadline" foreground="gray">
+          Easily generate RSS, Atom, and JSON feeds directly from a Farcaster Hub.
+        </text>
+
+        <vstack padding="top" alignment="leading">
+          <text font="title2">How To Use</text>
+          <text foreground="gray">
+            All feeds exclude replies and are sorted in reverse chronological order.
+          </text>
+
+          <text font="title3">User Feeds</text>
+          <text foreground="gray"
+            >Optionally filter by channel by adding the
+            <code style="color: #000">parent_url</code>
+            query parameter.</text
+          >
+          <hstack>
+            <code>/rss/user/{fid}</code>
+            <text foreground="gray">Generate an RSS feed of a user's casts.</text>
+          </hstack>
+
+          <hstack>
+            <code>/atom/user/{fid}</code>
+            <text foreground="gray">Generate an Atom feed of a user's casts.</text>
+          </hstack>
+
+          <hstack>
+            <code>/json/user/{fid}</code>
+            <text foreground="gray">Generate an JSON feed of a user's casts.</text>
+          </hstack>
+
+          <text font="title3">Channel Feeds</text>
+          <text foreground="gray">
+            You can
+            <a
+              href="https://github.com/neynarxyz/farcaster-channels/blob/main/warpcast.json"
+              target="_blank"
+            >
+              find common parent_url's here</a
+            >.
+          </text>
+          <hstack>
+            <code>/rss/channel?url={parent_url}</code>
+            <text foreground="gray">Generate an RSS feed of casts in a channel.</text>
+          </hstack>
+
+          <hstack>
+            <code>/atom/channel?url={parent_url}</code>
+            <text foreground="gray">Generate an Atom feed of casts in a channel.</text>
+          </hstack>
+
+          <hstack>
+            <code>/json/channel?url={parent_url}</code>
+            <text foreground="gray">Generate an JSON feed of casts in a channel.</text>
+          </hstack>
+        </vstack>
+
+        <vstack padding="top" alignment="leading">
+          <text font="title2">Configuration</text>
+
+          <text foreground="gray">
+            To use a specific Farcaster Hub, add the "hub" query parameter where the value
+            includes the HTTP port (eg: <code>https://hub.freefarcasterhub.com:3281</code>)
+          </text>
+        </vstack>
+
+        <text foreground="gray">
+          By <a href="https://farcaster.xyz/greg" target="_blank">@greg</a> |
+          <a href="https://github.com/gskril/farcaster-hub-feeds" target="_blank">
+            View on GitHub
+          </a></text
+        >
+      </vstack>
+    </body>
+  </html>
+`,
+	);
+}
