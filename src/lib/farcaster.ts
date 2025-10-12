@@ -1,4 +1,4 @@
-import { CastAddBody, Casts, Profile, UserData } from "./types";
+import type { CastAddBody, Casts, Profile, UserData } from "./types";
 
 const FARCASTER_EPOCH = 1609459200000; // January 1, 2021 UTC
 
@@ -12,7 +12,7 @@ export function fromFarcasterTime(time: number) {
 }
 
 export async function fidToProfile(hub: string, fid: number): Promise<Profile> {
-	const endpoint = hub + `/v1/userDataByFid?fid=${fid}`;
+	const endpoint = `${hub}/v1/userDataByFid?fid=${fid}`;
 	const res = await fetch(endpoint);
 
 	if (!res.ok) {
@@ -49,8 +49,7 @@ export async function getCastsByFid(
 	fid: number,
 	pageLimit: number = 1000,
 ) {
-	const endpoint =
-		hub + `/v1/castsByFid?pageSize=${pageLimit}&reverse=true&fid=${fid}`;
+	const endpoint = `${hub}/v1/castsByFid?pageSize=${pageLimit}&reverse=true&fid=${fid}`;
 	const res = await fetch(endpoint);
 
 	if (!res.ok) {
@@ -67,7 +66,7 @@ export async function getCastsByParent(
 	url: string,
 	pageLimit: number = 1000,
 ) {
-	const endpoint = hub + `/v1/castsByParent?pageSize=${pageLimit}&url=${url}`;
+	const endpoint = `${hub}/v1/castsByParent?reverse=true&pageSize=${pageLimit}&url=${url}`;
 	const res = await fetch(endpoint);
 
 	if (!res.ok) {
