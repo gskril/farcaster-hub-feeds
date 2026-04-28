@@ -11,9 +11,13 @@ export function fromFarcasterTime(time: number) {
   return time * 1000 + FARCASTER_EPOCH;
 }
 
-export async function fidToProfile(hub: string, fid: number): Promise<Profile> {
+export async function fidToProfile(
+  hub: string,
+  fid: number,
+  headers?: Record<string, string>
+): Promise<Profile> {
   const endpoint = hub + `/v1/userDataByFid?fid=${fid}`;
-  const res = await fetch(endpoint);
+  const res = await fetch(endpoint, { headers });
 
   if (!res.ok) {
     return {
@@ -44,9 +48,9 @@ export async function fidToProfile(hub: string, fid: number): Promise<Profile> {
   return profile;
 }
 
-export async function getCastsByFid(hub: string, fid: number) {
+export async function getCastsByFid(hub: string, fid: number, headers?: Record<string, string>) {
   const endpoint = hub + `/v1/castsByFid?pageSize=1000&reverse=true&fid=${fid}`;
-  const res = await fetch(endpoint);
+  const res = await fetch(endpoint, { headers });
 
   if (!res.ok) {
     return { error: res.statusText };
@@ -57,9 +61,13 @@ export async function getCastsByFid(hub: string, fid: number) {
   return { data: castsByFid };
 }
 
-export async function getCastsByParent(hub: string, url: string) {
+export async function getCastsByParent(
+  hub: string,
+  url: string,
+  headers?: Record<string, string>
+) {
   const endpoint = hub + `/v1/castsByParent?url=${url}`;
-  const res = await fetch(endpoint);
+  const res = await fetch(endpoint, { headers });
 
   if (!res.ok) {
     return { error: res.statusText };

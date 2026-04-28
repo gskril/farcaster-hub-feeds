@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -82,8 +82,20 @@
         <text font="title2">Configuration</text>
 
         <text foreground="gray">
-          To use a specific Farcaster Hub, add the "hub" query parameter where the value
-          includes the HTTP port (eg: <code>https://hub.freefarcasterhub.com:3281</code>)
+          Every request must specify a data source via one of the following query
+          parameters:
+        </text>
+
+        <text foreground="gray">
+          <code>hub</code> — a Farcaster Hub URL including the HTTP port (eg:
+          <code>https://yourfarcasterhub.com</code>).
+        </text>
+
+        <text foreground="gray">
+          <code>neynar-api-key</code> — a
+          <a href="https://neynar.com" target="_blank">Neynar</a> API key. When present,
+          requests are routed to <code>https://snapchain-api.neynar.com</code> with the
+          key passed as the <code>x-api-key</code> header.
         </text>
       </vstack>
 

@@ -9,7 +9,7 @@ import {
   getCastsByFid,
 } from '../../_src/farcaster.js';
 import {
-  DEFAULT_HUB,
+  NEYNAR_HUB,
   parseEmbeds,
   profileName,
   warpcastConvoUrl,
@@ -20,17 +20,32 @@ const schema = z.object({
   fid: z.coerce.number(),
   parent_url: z.string().optional(),
   feedType: z.enum(['rss', 'json', 'atom']),
-  hub: z.string().url().default(DEFAULT_HUB),
+  hub: z.string().url().optional(),
+  'neynar-api-key': z.string().optional(),
 });
 
 export default async function handleUser(req: VercelRequest, res: VercelResponse) {
   const safeParse = schema.safeParse(req.query);
   if (!safeParse.success) return res.status(400).json(safeParse.error);
 
-  const { feedType, parent_url: parentUrl, fid, hub: _hub } = safeParse.data;
-  const hub = _hub.replace(/\/$/, ''); // remove trailing slash
-  const profile = await fidToProfile(hub, fid);
-  const castsByFid = await getCastsByFid(hub, fid);
+  const {
+    feedType,
+    parent_url: parentUrl,
+    fid,
+    hub: _hub,
+    'neynar-api-key': neynarApiKey,
+  } = safeParse.data;
+
+  if (!neynarApiKey && !_hub) {
+    return res.status(400).json({
+      error: 'Missing required query parameter: provide either `hub` or `neynar-api-key`.',
+    });
+  }
+
+  const hub = (neynarApiKey ? NEYNAR_HUB : _hub!).replace(/\/$/, '');
+  const headers = neynarApiKey ? { 'x-api-key': neynarApiKey } : undefined;
+  const profile = await fidToProfile(hub, fid, headers);
+  const castsByFid = await getCastsByFid(hub, fid, headers);
 
   if (castsByFid.error) return res.status(500).json(castsByFid);
   let casts = castsByFid?.data?.messages;

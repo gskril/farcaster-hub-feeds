@@ -77,4 +77,4 @@ export function parseEmbeds(castAddBody: CastAddBody) {
   return res;
 }
 
-export const DEFAULT_HUB = process.env.DEFAULT_HUB ?? 'https://hoyt.farcaster.xyz:2281';
+export const NEYNAR_HUB = 'https://snapchain-api.neynar.com';
